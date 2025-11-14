@@ -38,10 +38,10 @@ namespace Console_app
                             DeleteUser();
                             break;
                         case 3:
-                            //Users.EditUser();
+                            ViewUsers();
                             break;
                         case 4:
-                            //Users.ViewUsers();
+                            ViewUsers();
                             break;
                         case 0:
                             return;
@@ -63,7 +63,7 @@ namespace Console_app
             DateTime userBirthDate;
 
             int userIdInt = 0;
-            string userIdString, userName, userSurname, birthDateString, tripId;
+            string userIdString, userName, userSurname, userBirthDateString, tripId;
             Dictionary<string,string> userDict = new Dictionary<string, string>();
 
             Console.WriteLine("\nUNOS NOVOG KORISNIKA");
@@ -77,17 +77,17 @@ namespace Console_app
             userSurname = Console.ReadLine();
 
             Console.Write("Unesi datum rođenja (npr. 2000-05-12): ");
-            birthDateString = Console.ReadLine();
+            userBirthDateString = Console.ReadLine();
 
-            while (!DateTime.TryParse(birthDateString, out userBirthDate))
+            while (!DateTime.TryParse(userBirthDateString, out userBirthDate))
             {
                 Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
-                birthDateString = Console.ReadLine();
+                userBirthDateString = Console.ReadLine();
             }
             while (userBirthDate.Year > 2025 && userBirthDate.Month > 12 && userBirthDate.Day > 31)
             {
                 Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
-                birthDateString = Console.ReadLine();
+                userBirthDateString = Console.ReadLine();
             }
 
             //Console.Write("Unesi ID putovanja: ");
@@ -96,7 +96,7 @@ namespace Console_app
             userDict.Add("userId", userIdString);
             userDict.Add("userName", userName);
             userDict.Add("userSurname", userSurname);
-            userDict.Add("userBirthDate", birthDateString);
+            userDict.Add("userBirthDate", userBirthDateString);
             //userDict.Add("tripId", tripId);
 
             userIdInt++;
@@ -117,9 +117,6 @@ namespace Console_app
             bool found = false;
             string sure;
          
-
-
-
 
             Console.WriteLine("Unesite id ili ime i prezime korisnika");
             deleteUser = Console.ReadLine();
@@ -166,6 +163,25 @@ namespace Console_app
                     Console.WriteLine("Korisnik nije izbrisan");
                 }
             }
+
+
+        }
+
+        public static void ViewUsers()
+        {
+            Console.WriteLine("ID | Ime | Prezime | Datum rođenja | ID putovanja");
+
+            foreach (var user in usersList)
+            {
+                Console.WriteLine(
+                    $"{user["userId"]} | " +
+                    $"{user["userName"]} | " +
+                    $"{user["userSurname"]} | " +
+                    $"{user["userBirthDate"]} | "
+                );
+            }
+
+
 
 
         }
