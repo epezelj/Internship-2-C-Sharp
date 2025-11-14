@@ -4,7 +4,7 @@ namespace Console_app
 {
     internal class Users
     {
-        
+        public static List<Dictionary<string, string>> usersList = new List<Dictionary<string, string>>();
 
         public static void UsersMenu()
         {
@@ -12,53 +12,58 @@ namespace Console_app
             int choice;
 
             Console.WriteLine("\nOdabrali ste opciju Korisnici!");
-            Console.WriteLine(
-                "\n1 - Unos novog korisnika\n" +
-                "2 - Brisanje korisnika\n" +
-                "3 - Uređivanje korisnika\n" +
-                "4 - Pregled svih korisnika\n" +
-                "0 - Povratak na glavni izbornik\n"
-            );
 
-            if (int.TryParse(Console.ReadLine(), out choice))
+
+            while (true)
             {
+                
+                Console.WriteLine(
+                    "\n1 - Unos novog korisnika\n" +
+                    "2 - Brisanje korisnika\n" +
+                    "3 - Uređivanje korisnika\n" +
+                    "4 - Pregled svih korisnika\n" +
+                    "0 - Povratak na glavni izbornik\n"
+                );
 
-                switch (choice)
+
+                if (int.TryParse(Console.ReadLine(), out choice))
                 {
-                    case 1:
-                        AddUser();
-                        break;
-                    case 2:
-                        //Users.DeleteUser();
-                        break;
-                    case 3:
-                        //Users.EditUser();
-                        break;
-                    case 4:
-                        //Users.ViewUsers();
-                        break;
-                    case 0:
-                        return;
-                    default:
-                        Console.WriteLine("Neispravan odabir!");
-                        break;
+
+                    switch (choice)
+                    {
+                        case 1:
+                            AddUser();
+                            break;
+                        case 2:
+                            DeleteUser();
+                            break;
+                        case 3:
+                            //Users.EditUser();
+                            break;
+                        case 4:
+                            //Users.ViewUsers();
+                            break;
+                        case 0:
+                            return;
+                        default:
+                            Console.WriteLine("Neispravan odabir!");
+                            break;
+                    }
+
                 }
-
+                else
+                {
+                    Console.WriteLine("Neispravan unos!");
+                }
             }
-            else
-            {
-                Console.WriteLine("Neispravan unos!");
-            }
-
 
         }
         public static void AddUser()
         {
-            List<Dictionary<string, string>> usersList = new List<Dictionary<string, string>>();
-            DateTime birthDate;
+            DateTime userBirthDate;
 
             int userIdInt = 0;
-            string userIdString, name, surname, birthDateString, tripId;
+            string userIdString, userName, userSurname, birthDateString, tripId;
             Dictionary<string,string> userDict = new Dictionary<string, string>();
 
             Console.WriteLine("\nUNOS NOVOG KORISNIKA");
@@ -66,20 +71,20 @@ namespace Console_app
             userIdString = userIdInt.ToString();
 
             Console.Write("Unesi ime: ");
-            name = Console.ReadLine();
+            userName = Console.ReadLine();
 
             Console.Write("Unesi prezime: ");
-            surname = Console.ReadLine();
+            userSurname = Console.ReadLine();
 
             Console.Write("Unesi datum rođenja (npr. 2000-05-12): ");
             birthDateString = Console.ReadLine();
 
-            while (!DateTime.TryParse(birthDateString, out birthDate))
+            while (!DateTime.TryParse(birthDateString, out userBirthDate))
             {
                 Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
                 birthDateString = Console.ReadLine();
             }
-            while (birthDate.Year > 2025 && birthDate.Month > 12 && birthDate.Day > 31)
+            while (userBirthDate.Year > 2025 && userBirthDate.Month > 12 && userBirthDate.Day > 31)
             {
                 Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
                 birthDateString = Console.ReadLine();
@@ -89,9 +94,9 @@ namespace Console_app
             //tripId = Console.ReadLine();
 
             userDict.Add("userId", userIdString);
-            userDict.Add("name", name);
-            userDict.Add("surname", surname);
-            userDict.Add("birthDate", birthDateString);
+            userDict.Add("userName", userName);
+            userDict.Add("userSurname", userSurname);
+            userDict.Add("userBirthDate", birthDateString);
             //userDict.Add("tripId", tripId);
 
             userIdInt++;
@@ -99,16 +104,71 @@ namespace Console_app
             usersList.Add(userDict);
 
 
+        }
+
+        public static void DeleteUser()
+        {
+            string deleteUser;
+            string deleteByFullName;
+            bool matchById = false;
+            bool matchByFullName = false;
+            string userId;
+            string userFullName;
+            bool found = false;
+            string sure;
+         
 
 
 
 
+            Console.WriteLine("Unesite id ili ime i prezime korisnika");
+            deleteUser = Console.ReadLine();
 
+            for (int counter = 0; counter < usersList.Count; counter++)
+            {
+                var user = usersList[counter];
+
+                userId = user["userId"];
+                userFullName = user["userName"] + " " + user["userSurname"];
+
+                matchById = deleteUser.Equals(userId);
+                matchByFullName = deleteUser.Equals(userFullName);
+
+
+
+                if (matchById || matchByFullName)
+                {
+                    Console.WriteLine("Želite li sigurno izbrisati korisnika (DA ili NE)");
+                    sure = Console.ReadLine();
+                    
+
+                    if (sure == "DA")
+                    {
+                        usersList.RemoveAt(counter);
+                        found = true;
+
+
+                        if (found)
+                        {
+                            Console.WriteLine("Korisnik  je obrisan.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u ili imenu i prezimenu.");
+                        }
+                        found = false;
+
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("Korisnik nije izbrisan");
+                }
+            }
 
 
         }
-
-
 
     }
 }
