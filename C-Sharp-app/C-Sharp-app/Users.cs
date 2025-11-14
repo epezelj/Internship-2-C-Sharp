@@ -38,7 +38,7 @@ namespace Console_app
                             DeleteUser();
                             break;
                         case 3:
-                            ViewUsers();
+                            EditUsers();
                             break;
                         case 4:
                             ViewUsers();
@@ -63,7 +63,7 @@ namespace Console_app
             DateTime userBirthDate;
 
             int userIdInt = 0;
-            string userIdString, userName, userSurname, userBirthDateString, tripId;
+            string userIdString, userName, userSurname, userBirthDateString, tripId = "5";
             Dictionary<string,string> userDict = new Dictionary<string, string>();
 
             Console.WriteLine("\nUNOS NOVOG KORISNIKA");
@@ -97,7 +97,7 @@ namespace Console_app
             userDict.Add("userName", userName);
             userDict.Add("userSurname", userSurname);
             userDict.Add("userBirthDate", userBirthDateString);
-            //userDict.Add("tripId", tripId);
+            userDict.Add("tripId", tripId);
 
             userIdInt++;
 
@@ -108,14 +108,9 @@ namespace Console_app
 
         public static void DeleteUser()
         {
-            string deleteUser;
-            string deleteByFullName;
-            bool matchById = false;
-            bool matchByFullName = false;
-            string userId;
-            string userFullName;
-            bool found = false;
-            string sure;
+            string deleteUser, deleteByFullName, userId, userFullName, sure;
+            bool matchById = false, matchByFullName = false;
+          
          
 
             Console.WriteLine("Unesite id ili ime i prezime korisnika");
@@ -142,25 +137,18 @@ namespace Console_app
                     if (sure == "DA")
                     {
                         usersList.RemoveAt(counter);
-                        found = true;
+                        Console.WriteLine("Upješno brisanje!");
 
-
-                        if (found)
-                        {
-                            Console.WriteLine("Korisnik  je obrisan.");
-                        }
-                        else
-                        {
-                            Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u ili imenu i prezimenu.");
-                        }
-                        found = false;
-
+                    }
+                    else
+                    {
+                        Console.WriteLine("Brisanje prekinuto!\n");
                     }
 
                 }
                 else
                 {
-                    Console.WriteLine("Korisnik nije izbrisan");
+                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u ili imenu i prezimenu");
                 }
             }
 
@@ -177,7 +165,8 @@ namespace Console_app
                     $"{user["userId"]} | " +
                     $"{user["userName"]} | " +
                     $"{user["userSurname"]} | " +
-                    $"{user["userBirthDate"]} | "
+                    $"{user["userBirthDate"]} | " +
+                    $"{user["tripId"]}"
                 );
             }
 
@@ -186,5 +175,76 @@ namespace Console_app
 
         }
 
+        public static void EditUsers()
+        {
+            bool matchById = false;
+            string userId, sure, editUser, newUserName, newUserSurname, newUserBirthDate, newTripId;
+
+            Console.WriteLine("Unesite id  korisnika");
+            editUser = Console.ReadLine();
+
+
+            for (int counter = 0; counter < usersList.Count; counter++)
+            {
+                var user = usersList[counter];
+
+                userId = user["userId"];
+
+                matchById = editUser.Equals(userId);
+
+
+                if (matchById)
+                {
+
+                    Console.WriteLine($"Ime: {user["userName"]}");
+                    Console.WriteLine($"Prezime: {user["userSurname"]}");
+                    Console.WriteLine($"Datum rođenja: {user["userBirthDate"]}");
+                    Console.WriteLine($"ID putovanja: {user["tripId"]}");
+
+                    Console.WriteLine("\nOstavite prazno polje za podatke koje NE želite mijenjati.\n");
+                    Console.WriteLine("Želite li sigurno mijenjati podatke?: ");
+                    sure = Console.ReadLine();
+
+                    if (sure == "DA")
+                    {
+
+                        Console.Write("Novo ime: ");
+                        newUserName = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(newUserName))
+                            user["userName"] = newUserName;
+
+                        Console.Write("Novo prezime: ");
+                        newUserSurname = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(newUserSurname))
+                            user["userSurname"] = newUserSurname;
+
+                        Console.Write("Novi datum rođenja (YYYY-MM-DD): ");
+                        newUserBirthDate = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(newUserBirthDate))
+                            user["birthDate"] = newUserBirthDate;
+
+                        Console.Write("Novi ID putovanja: ");
+                        newTripId = Console.ReadLine();
+                        if (!string.IsNullOrWhiteSpace(newTripId))
+                            user["tripId"] = newTripId;
+
+                        Console.WriteLine("\nUpješne izmjene!\n");
+                        return;
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Izmjene prekinute!");
+                    }
+                }
+
+                else
+                {
+                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u");
+                }
+            }
+
+            
+        }
     }
 }
