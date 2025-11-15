@@ -6,6 +6,9 @@
         {
             int choice;
 
+            Users.InitializeUsers();
+            Trips.InitializeTrips();
+
             while (true)
             {
 
@@ -45,5 +48,8 @@
                 }
             }
         }
+        
     }
+
+    
 }

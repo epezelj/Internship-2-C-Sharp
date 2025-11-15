@@ -7,6 +7,8 @@ namespace Console_app
     {
         public static List<Dictionary<string, string>> usersList = new List<Dictionary<string, string>>();
 
+
+
         public static void UsersMenu()
         {
 
@@ -56,6 +58,38 @@ namespace Console_app
                 }
             }
 
+        }
+
+        public static void InitializeUsers()
+        {
+            {
+                Users.usersList.Add(new Dictionary<string, string> {
+                {"userId", "0"}, {"userName", "Ana"}, {"userSurname", "Anić"},
+                {"userBirthDate", "2000-03-15"}, {"tripId", "1"}
+            });
+
+                Users.usersList.Add(new Dictionary<string, string> {
+                {"userId", "1"}, {"userName", "Ante"}, {"userSurname", "Antić"},
+                {"userBirthDate", "1998-10-04"}, {"tripId", "3"}
+            });
+
+                Users.usersList.Add(new Dictionary<string, string> {
+                {"userId", "2"}, {"userName", "Stipe"}, {"userSurname", "Stipić"},
+                {"userBirthDate", "2005-06-22"}, {"tripId", "2"}
+            });
+
+                Users.usersList.Add(new Dictionary<string, string> {
+                {"userId", "3"}, {"userName", "Ivo"}, {"userSurname", "Ivić"},
+                {"userBirthDate", "1999-12-30"}, {"tripId", "4"}
+            });
+
+                Users.usersList.Add(new Dictionary<string, string> {
+                {"userId", "4"}, {"userName", "Petra"}, {"userSurname", "Petrić"},
+                {"userBirthDate", "2002-08-05"}, {"tripId", "0"}
+
+             });
+            }
+            return;
         }
         public static void AddUser()
         {

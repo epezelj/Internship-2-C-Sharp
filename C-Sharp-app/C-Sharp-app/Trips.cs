@@ -55,7 +55,45 @@ namespace Console_app
                 }
             }
         }
+        public static void InitializeTrips()
+        {
+            tripsList.Add(new Dictionary<string, string> {
+            { "tripId", "1" }, { "tripDate", "2024-01-10" },
+            { "tripKm", "120" }, { "tripFuel", "8" },
+            { "tripFuelPriceLiter", "1.50" },
+            { "totalTripPrice", (8 * 1.50).ToString() }
+        });
 
+             tripsList.Add(new Dictionary<string, string> {
+            { "tripId", "2" }, { "tripDate", "2024-02-12" },
+            { "tripKm", "250" }, { "tripFuel", "14" },
+            { "tripFuelPriceLiter", "1.60" },
+            { "totalTripPrice", (14 * 1.60).ToString() }
+        });
+
+             tripsList.Add(new Dictionary<string, string> {
+            { "tripId", "3" }, { "tripDate", "2024-03-05" },
+            { "tripKm", "80" }, { "tripFuel", "5" },
+            { "tripFuelPriceLiter", "1.45" },
+            { "totalTripPrice", (5 * 1.45).ToString() }
+        });
+
+             tripsList.Add(new Dictionary<string, string> {
+            { "tripId", "4" }, { "tripDate", "2024-04-01" },
+            { "tripKm", "300" }, { "tripFuel", "20" },
+            { "tripFuelPriceLiter", "1.70" },
+            { "totalTripPrice", (20 * 1.70).ToString() }
+        });
+
+             tripsList.Add(new Dictionary<string, string> {
+            { "tripId", "5" }, { "tripDate", "2024-05-20" },
+            { "tripKm", "150" }, { "tripFuel", "10" },
+            { "tripFuelPriceLiter", "1.55" },
+            { "totalTripPrice", (10 * 1.55).ToString() }
+        });
+            return;
+
+        }
         public static void AddTrip()
         {
             DateTime tripDate;
@@ -350,7 +388,7 @@ namespace Console_app
                         if (double.TryParse(trip["tripFuel"], out newTripFuel) && double.TryParse(trip["tripPricePerLiter"], out newTripPriceLiter))
                         {
                             newTotalTripPrice = newTripFuel * newTripPriceLiter;
-                            trip["tripTotalPrice"] = newTotalTripPrice.ToString();
+                            trip["totalTripPrice"] = newTotalTripPrice.ToString();
                         }
 
                         Console.WriteLine("\nUspješne izmjene!\n");
@@ -375,7 +413,7 @@ namespace Console_app
     public static void ViewTrips()
         {
             tripsList.Sort((tripDict1, tripDict2) =>
-                double.Parse(tripDict1["tripTotalPrice"]).CompareTo(double.Parse(tripDict2["tripTotalPrice"])));
+                double.Parse(tripDict1["totalTripPrice"]).CompareTo(double.Parse(tripDict2["totalTripPrice"])));
 
             Console.WriteLine("\nSva putovanja sortirana po trošku uzlazno:");
             Console.WriteLine("ID - Datum - Km - Gorivo(L) - Cijena/L - Ukupno");
@@ -386,13 +424,13 @@ namespace Console_app
                     $"{trip["tripDate"]} - " +
                     $"{trip["tripKm"]} - " +
                     $"{trip["tripFuel"]} - " +
-                    $"{trip["tripPricePerLiter"]} - " +
-                    $"{trip["tripTotalPrice"]}\n"
+                    $"{trip["tripFuelPriceLiter"]} - " +
+                    $"{trip["totalTripPrice"]}\n"
                 );
             }
 
             tripsList.Sort((tripDict1, tripDict2) =>
-                double.Parse(tripDict2["tripTotalPrice"]).CompareTo(double.Parse(tripDict1["tripTotalPrice"])));
+                double.Parse(tripDict2["totalTripPrice"]).CompareTo(double.Parse(tripDict1["totalTripPrice"])));
 
             Console.WriteLine("\nSva putovanja sortirana po trošku silazno:");
             Console.WriteLine("ID - Datum - Km - Gorivo(L) - Cijena/L - Ukupno");
@@ -403,8 +441,8 @@ namespace Console_app
                     $"{trip["tripDate"]} - " +
                     $"{trip["tripKm"]} - " +
                     $"{trip["tripFuel"]} - " +
-                    $"{trip["tripPricePerLiter"]} - " +
-                    $"{trip["tripTotalPrice"]}\n"
+                    $"{trip["tripFuelPriceLiter"]} - " +
+                    $"{trip["totalTripPrice"]}\n"
                 );
             }
 
@@ -420,8 +458,8 @@ namespace Console_app
                     $"{trip["tripDate"]} - " +
                     $"{trip["tripKm"]} - " +
                     $"{trip["tripFuel"]} - " +
-                    $"{trip["tripPricePerLiter"]} - " +
-                    $"{trip["tripTotalPrice"]}\n"
+                    $"{trip["tripFuelPriceLiter"]} - " +
+                    $"{trip["totalTripPrice"]}\n"
                 );
             }
 
@@ -437,8 +475,8 @@ namespace Console_app
                     $"{trip["tripDate"]} - " +
                     $"{trip["tripKm"]} - " +
                     $"{trip["tripFuel"]} - " +
-                    $"{trip["tripPricePerLiter"]} - " +
-                    $"{trip["tripTotalPrice"]}\n"
+                    $"{trip["tripFuelPriceLiter"]} - " +
+                    $"{trip["totalTripPrice"]}\n"
                 );
             }
 
@@ -454,8 +492,8 @@ namespace Console_app
                     $"{trip["tripDate"]} - " +
                     $"{trip["tripKm"]} - " +
                     $"{trip["tripFuel"]} - " +
-                    $"{trip["tripPricePerLiter"]} - " +
-                    $"{trip["tripTotalPrice"]}\n"
+                    $"{trip["tripFuelPriceLiter"]} - " +
+                    $"{trip["totalTripPrice"]}\n"
                 );
             }
 
@@ -471,8 +509,8 @@ namespace Console_app
                     $"{trip["tripDate"]} - " +
                     $"{trip["tripKm"]} - " +
                     $"{trip["tripFuel"]} - " +
-                    $"{trip["tripPricePerLiter"]} - " +
-                    $"{trip["tripTotalPrice"]}\n"
+                    $"{trip["tripFuelPriceLiter"]} - " +
+                    $"{trip["totalTripPrice"]}\n"
                 );
             }
         }
