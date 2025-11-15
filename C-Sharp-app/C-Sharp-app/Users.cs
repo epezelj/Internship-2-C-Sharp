@@ -284,11 +284,6 @@ namespace Console_app
             }
 
 
-                
-
-
-
-
 
 
         }

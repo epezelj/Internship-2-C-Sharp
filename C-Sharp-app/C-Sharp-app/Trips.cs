@@ -4,7 +4,7 @@ namespace Console_app
 {
     internal class Trips
     {
-        static List<Dictionary<string, string>> tripsList = new List<Dictionary<string,string>>();
+        static List<Dictionary<string, string>> tripsList = new List<Dictionary<string, string>>();
 
         public static void TripsMenu()
         {
@@ -31,7 +31,7 @@ namespace Console_app
                             AddTrip();
                             break;
                         case 2:
-                            //DeleteUser();
+                            DeleteTrip();
                             break;
                         case 3:
                             //EditUsers();
@@ -75,7 +75,7 @@ namespace Console_app
             {
                 Console.Write("Neispravan datum, pokušaj ponovno (npr. 2025-05-12): ");
                 tripDateString = Console.ReadLine();
-    
+
             }
             while (tripDate.Year > 2025 && tripDate.Month > 12 && tripDate.Day > 31)
             {
@@ -83,7 +83,7 @@ namespace Console_app
                 tripDateString = Console.ReadLine();
             }
 
-                Console.Write("Unesi prijeđene kilometre: ");
+            Console.Write("Unesi prijeđene kilometre: ");
             tripKmString = Console.ReadLine();
             while (!double.TryParse(tripKmString, out tripKm) || tripKm <= 0)
             {
@@ -121,10 +121,127 @@ namespace Console_app
             Console.WriteLine("\nPutovanje je uspješno dodano!");
             tripIdInt++;
 
-            
+
         }
 
+        public static void DeleteTrip()
+        {
+            string deleteTripId, tripId, sure, minTripPriceString, minTripPrice,
+             maxTripPriceString, maxTripPrice;
 
+            Console.WriteLine("\nUnesite id putovanja koje želite izbrisati:\n");
+            deleteTripId = Console.ReadLine();
+
+            for (int counter = 0; counter < tripsList.Count; counter++)
+            {
+                var trip = tripsList[counter];
+
+                tripId = trip["tripId"];
+
+                if (deleteTripId.Equals(tripId))
+                {
+                    Console.WriteLine(
+                        "Pronađeno putovanje:\n" +
+                        $"ID: {trip["tripId"]}, Datum: {trip["tripDate"]}, Km: {trip["tripKm"]}, " +
+                        $"Gorivo: {trip["tripFuel"]}, Cijena/L: {trip["tripPricePerLiter"]}"
+                    );
+
+                    Console.WriteLine("\nŽelite li sigurno izbrisati ovo putovanje? (DA ili NE)");
+                    sure = Console.ReadLine();
+
+                    if (sure == "DA")
+                    {
+                        tripsList.RemoveAt(counter);
+                        Console.WriteLine("Uspješno brisanje putovanja!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Brisanje prekinuto!\n");
+                    }
+
+                }
+
+                else
+                {
+                    Console.WriteLine("Nijedno putovanje ne odgovara unesenom id-u.");
+                }
+            }
+
+
+            for (int counter = 0; counter < tripsList.Count; counter++)
+            {
+                var trip = tripsList[counter];
+
+                minTripPriceString = Console.ReadLine();
+                double.TryParse(minTripPriceString, out double tripPrice);
+
+                if (double.Parse(trip["totalTripPrice"]) > tripPrice)
+                {
+                    Console.WriteLine(
+                        "Pronađeno putovanje:\n" +
+                        $"ID: {trip["tripId"]}, Datum: {trip["tripDate"]}, Km: {trip["tripKm"]}, " +
+                        $"Gorivo: {trip["tripFuel"]}, Cijena/L: {trip["tripPricePerLiter"]}"
+                    );
+
+                    Console.WriteLine("\nŽelite li sigurno izbrisati ovo putovanje? (DA ili NE)");
+                    sure = Console.ReadLine();
+
+                    if (sure == "DA")
+                    {
+                        tripsList.RemoveAt(counter);
+                        Console.WriteLine("Uspješno brisanje putovanja!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Brisanje prekinuto!\n");
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("Nijedno putovanje nije skuplje od unesenog iznosa");
+                }
+
+            }
+
+            for (int counter = 0; counter < tripsList.Count; counter++)
+            {
+                var trip = tripsList[counter];
+
+                maxTripPriceString = Console.ReadLine();
+                double.TryParse(maxTripPriceString, out double tripPrice);
+
+                if (double.Parse(trip["totalTripPrice"]) < tripPrice)
+                {
+                    Console.WriteLine(
+                        "Pronađeno putovanje:\n" +
+                        $"ID: {trip["tripId"]}, Datum: {trip["tripDate"]}, Km: {trip["tripKm"]}, " +
+                        $"Gorivo: {trip["tripFuel"]}, Cijena/L: {trip["tripPricePerLiter"]}"
+                    );
+
+                    Console.WriteLine("\nŽelite li sigurno izbrisati ovo putovanje? (DA ili NE)");
+                    sure = Console.ReadLine();
+
+                    if (sure == "DA")
+                    {
+                        tripsList.RemoveAt(counter);
+                        Console.WriteLine("Uspješno brisanje putovanja!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Brisanje prekinuto!\n");
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("Nijedno putovanje nije jeftinije od unesenog iznosa");
+                }
+
+            }
+
+
+
+        }
     }
-
 }
