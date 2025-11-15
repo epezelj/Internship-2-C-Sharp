@@ -40,6 +40,7 @@ namespace Console_app
                             ViewTrips();
                             break;
                         case 5:
+                            Users.UserAnalysis(Console.ReadLine());
                             break;
                         case 0:
                             return;
@@ -98,13 +99,13 @@ namespace Console_app
         {
             DateTime tripDate;
             double tripKm, tripFuel, tripFuelPriceLiter, totalTripPrice;
-            int tripIdInt = 0;
+            int tripId = 0;
             string tripIdString, tripDateString, tripKmString, tripFuelString, tripPriceLiterString;
             Dictionary<string, string> tripDict = new Dictionary<string, string>();
 
             Console.WriteLine("\nUNOS NOVOG PUTOVANJA");
 
-            tripIdString = tripIdInt.ToString();
+            tripIdString = tripId.ToString();
 
             Console.Write("Unesi datum putovanja (npr. 2025-05-12): ");
             tripDateString = Console.ReadLine();
@@ -156,11 +157,18 @@ namespace Console_app
 
             tripsList.Add(tripDict);
 
+            Console.Write("Unesi id ili ime i prezime korisnika kojem želite dodati ovo putovanjei: ");
+            Users.ConnectWithTrip(Console.ReadLine(), tripIdString);
+            
+
             Console.WriteLine("\nPutovanje je uspješno dodano!");
-            tripIdInt++;
+            
+            tripId++;
 
 
         }
+
+
 
         public static void DeleteTrip()
         {

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Design;
+using System.Diagnostics.Metrics;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Console_app
@@ -95,13 +96,13 @@ namespace Console_app
         {
             DateTime userBirthDate;
 
-            int userIdInt = 0;
+            int userId = 0;
             string userIdString, userName, userSurname, userBirthDateString, tripId = "5";
             Dictionary<string,string> userDict = new Dictionary<string, string>();
 
             Console.WriteLine("\nUNOS NOVOG KORISNIKA");
 
-            userIdString = userIdInt.ToString();
+            userIdString = userId.ToString();
 
             Console.Write("Unesi ime: ");
             userName = Console.ReadLine();
@@ -143,7 +144,7 @@ namespace Console_app
             userDict.Add("userBirthDate", userBirthDateString);
             userDict.Add("tripId", tripId);
 
-            userIdInt++;
+            userId++;
 
             usersList.Add(userDict);
 
@@ -320,6 +321,79 @@ namespace Console_app
 
 
 
+        }
+
+        public static void ConnectWithTrip(string findUserIdNameSurname, string tripIdString)
+        {
+
+            string findUserId, findUserFullName, sure;
+            bool matchById = false, matchByFullName = false;
+
+
+            for (int counter = 0; counter < usersList.Count; counter++)
+            {
+                var user = usersList[counter];
+
+                findUserId = user["userId"];
+                findUserFullName = user["userName"] + " " + user["userSurname"];
+
+                matchById = findUserIdNameSurname.Equals(findUserId);
+                matchByFullName = findUserIdNameSurname.Equals(findUserFullName);
+
+
+
+                if (matchById || matchByFullName)
+                {
+                    user["tripId"] = tripIdString;
+                }
+                else
+                {
+                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u ili imenu i prezimenu");
+                }
+            }
+        }
+
+        public static void UserAnalysis(string findUserIdNameSurname)
+        { 
+            string findUserId, findUserFullName, sure;
+            bool matchById = false, matchByFullName = false;
+            int totalPrice = 0, totalFuel = 0, totalKm = 0, maxTripFuel = 0;
+
+
+            for (int counter = 0; counter < usersList.Count; counter++)
+            {
+                var user = usersList[counter];
+
+                findUserId = user["userId"];
+                findUserFullName = user["userName"] + " " + user["userSurname"];
+
+                matchById = findUserIdNameSurname.Equals(findUserId);
+                matchByFullName = findUserIdNameSurname.Equals(findUserFullName);
+
+
+                if (matchById || matchByFullName)
+                {
+                    foreach (var trip in Trips.tripsList)
+                    {
+                        if (trip["tripId"].Equals(user["tripId"]))
+                        {
+                            totalPrice = totalPrice + int.Parse(trip["totalTripPrice"]);
+                            totalFuel = totalFuel + int.Parse(trip["tripFuel"]);
+                            totalKm = totalKm + int.Parse(trip["tripKm"]);
+
+                            if (int.Parse(trip["tripFuel"]) > maxTripFuel)
+                            {
+                                maxTripFuel = int.Parse(trip["tripFuel"]);
+                            }
+
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u ili imenu i prezimenu");
+                }
+            }
         }
     }
 }
