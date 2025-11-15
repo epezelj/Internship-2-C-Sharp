@@ -168,7 +168,7 @@
                     found++;
                     Console.WriteLine("Želite li sigurno izbrisati korisnika (DA ili NE)");
                     sure = Console.ReadLine();
-        
+
                     if (sure == "DA")
                     {
                         usersList.RemoveAt(counter);
@@ -176,14 +176,16 @@
                     }
                     else
                     {
-                        Console.WriteLine("Brisanje prekinuto!\n");
+                        {
+                            Console.WriteLine("Brisanje prekinuto!\n");
+                        }
+
                     }
-                    
                 }
-            }
-            if (found == 0)
-            {
-                Console.WriteLine("Nijedan korisnik ne odgovara unesenom ID-u ili imenu i prezimenu.");
+                if (found == 0)
+                {
+                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom ID-u ili imenu i prezimenu.");
+                }
             }
         }
         public static void EditUser()
@@ -335,8 +337,6 @@
             bool matchById = false, matchByFullName = false;
             int found = 0;
 
-            Console.WriteLine("\nPOVEZIVANJE KORISNIKA S PUTOVANJEM");
-
             while (string.IsNullOrWhiteSpace(findUserIdNameSurname))
             {
                 Console.WriteLine("Neispravan unos!");
@@ -350,43 +350,40 @@
                 return;
             }
 
-            while (found == 0)
+            foreach (var user in usersList)
             {
-                foreach (var user in usersList)
+                findUserId = user["userId"];
+                findUserFullName = user["userName"] + " " + user["userSurname"];
+
+                matchById = findUserIdNameSurname.Equals(findUserId);
+                matchByFullName = findUserIdNameSurname.Equals(findUserFullName);
+
+
+                if (matchById || matchByFullName)
                 {
-                    findUserId = user["userId"];
-                    findUserFullName = user["userName"] + " " + user["userSurname"];
+                    user["tripId"] = user["tripId"] + " " + tripIdString;
+                    Console.WriteLine($"\nKorisniku {findUserFullName} dodijeljeno je putovanje s ID-jem {tripIdString}.");
 
-                    matchById = findUserIdNameSurname.Equals(findUserId);
-                    matchByFullName = findUserIdNameSurname.Equals(findUserFullName);
-
-
-                    if (matchById || matchByFullName)
-                    {
-                        user["tripId"] = user["tripId"] + " " + tripIdString;
-                        Console.WriteLine($"\nKorisniku {findUserFullName} dodijeljeno je putovanje s ID-jem {tripIdString}.");
-
-                        found++;
-                    }
+                    found++;
                 }
-                if (found == 0)
-                {
-                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom ID-u ili imenu i prezimenu.");
-                }
-
+ 
+            }
+            if (found == 0)
+            {
+                Console.WriteLine("Nijedan korisnik ne odgovara unesenom ID-u ili imenu i prezimenu.");
             }
         }
-        public static void UserAnalysis(string findUserIdNameSurname)
+        public static void UserAnalysis()
         { 
-            string findUserId, findUserFullName, sure, choiceDateString;
+            string findUserId, findUserFullName, sure, choiceDateString, findUserIdNameSurname;
             bool matchById = false, matchByFullName = false;
             double totalPrice = 0, totalFuel = 0, totalKm = 0, maxTripFuel = 0;
             DateTime choiceDate;
             int foundTrip = 0, found = 0, foundDate = 0;
-        
 
-            Console.WriteLine("\nIZVJEŠTAJ I ANALIZA KORISNIKA");
-
+            Console.WriteLine("IZVJEŠTAJI I ANALIZE PO KORISNIKU");
+            Console.WriteLine("Unesite ID ili ime i prezime korisnika:  ");
+            findUserIdNameSurname = Console.ReadLine();
 
             while (string.IsNullOrWhiteSpace(findUserIdNameSurname))
             {
@@ -395,13 +392,13 @@
                 findUserIdNameSurname = Console.ReadLine();
             }
 
-            Console.Write("Unesite datum za pregled putovanja (YYYY-MM-DD) ili ostavite prazno: ");
+            Console.Write("Unesite datum za pregled putovanja (YYYY-MM-DD): ");
             choiceDateString = Console.ReadLine();
             while (!DateTime.TryParse(choiceDateString, out choiceDate) ||
             choiceDate.Year > 2025 && choiceDate.Month > 12 && choiceDate.Day > 31)
             {
                 Console.WriteLine("Neispravan datum!");
-                Console.Write("Unesite datum (YYYY-MM-DD) ili ostavite prazno: ");
+                Console.Write("Unesite datum (YYYY-MM-DD)");
                 choiceDateString = Console.ReadLine();
             }
 
@@ -415,11 +412,12 @@
 
                 if (matchById || matchByFullName)
                 {
-                    found++;
+                    
                     foreach (var trip in Trips.tripsList)
                     {
                         if (user["tripId"].Contains(trip["tripId"]))
                         {
+                            found++;
                             foundTrip++;
                             totalPrice = totalPrice + double.Parse(trip["totalTripPrice"]);
                             totalFuel = totalFuel + double.Parse(trip["tripFuel"]);
@@ -450,7 +448,7 @@
                         Console.WriteLine("Prosječnu potrošnju nije moguće izračunati (ukupno km = 0).");
                     }
 
-                    if (maxTripFuel != null)
+                    if (maxTripFuel != 0)
                     {
                         Console.WriteLine("\nPutovanje s najvećom potrošnjom goriva:");
                         Trips.PrintTrip(user);
@@ -490,7 +488,7 @@
             }
             if (found == 0)
                 {
-                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u ili imenu i prezimenu");
+                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom ID-u ili imenu i prezimenu");
                 }
             }
     }
