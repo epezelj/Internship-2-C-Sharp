@@ -76,18 +76,15 @@
             return;
         }
 
-        public static void PrintUsers()
+        public static void PrintUser(Dictionary<string, string>user)
         {
-            foreach (var user in usersList)
-            {
-                Console.WriteLine(
-                    $"{user["userId"]} - " +
-                    $"{user["userName"]} - " +
-                    $"{user["userSurname"]} - " +
-                    $"{user["userBirthDate"]} - " +
-                    $"{user["tripId"]}"
-                );
-            }
+            Console.WriteLine(
+            $"{user["userId"]} - " +
+            $"{user["userName"]} - " +
+            $"{user["userSurname"]} - " +
+            $"{user["userBirthDate"]} - " +
+            $"{user["tripId"]}"
+            );
 
         }
         public static void AddUser()
@@ -98,11 +95,10 @@
             Dictionary<string,string> userDict = new Dictionary<string, string>();
 
             Console.WriteLine("\nUNOS NOVOG KORISNIKA");
-
             userIdString = userId.ToString();
-
             Console.Write("Unesi ime: ");
             userName = Console.ReadLine();
+
             while(string.IsNullOrWhiteSpace(userName))
             {
                 Console.WriteLine("Neispravan unos!");
@@ -121,12 +117,8 @@
 
             Console.Write("Unesi datum rođenja (npr. 2000-05-12): ");
             userBirthDateString = Console.ReadLine();
-            while (!DateTime.TryParse(userBirthDateString, out userBirthDate))
-            {
-                Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
-                userBirthDateString = Console.ReadLine();
-            }
-            while (userBirthDate.Year > 2025 && userBirthDate.Month > 12 && userBirthDate.Day > 31)
+            while (!DateTime.TryParse(userBirthDateString, out userBirthDate) ||
+            userBirthDate.Year > 2025 && userBirthDate.Month > 12 && userBirthDate.Day > 31)
             {
                 Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
                 userBirthDateString = Console.ReadLine();
@@ -141,15 +133,25 @@
             userId++;
 
             usersList.Add(userDict);
+            Console.WriteLine("\nKorisnik je uspješno dodan!\n");
         }
 
         public static void DeleteUser()
         {
             string deleteUser, deleteByFullName, userId, userFullName, sure;
             bool matchById = false, matchByFullName = false;
+            int found = 0;
 
-            Console.WriteLine("Unesite id ili ime i prezime korisnika");
+            Console.WriteLine("\nBRISANJE KORISNIKA");
+            Console.WriteLine("Unesite ID ili ime i prezime korisnika:");
             deleteUser = Console.ReadLine();
+
+            while (string.IsNullOrWhiteSpace(deleteUser))
+            {
+                Console.WriteLine("Neispravan unos! Pokušajte ponovno.");
+                Console.Write("Unesite ID ili ime i prezime korisnika: ");
+                deleteUser = Console.ReadLine();
+            }
 
             for (int counter = 0; counter < usersList.Count; counter++)
             {
@@ -163,6 +165,7 @@
 
                 if (matchById || matchByFullName)
                 {
+                    found++;
                     Console.WriteLine("Želite li sigurno izbrisati korisnika (DA ili NE)");
                     sure = Console.ReadLine();
         
@@ -175,21 +178,31 @@
                     {
                         Console.WriteLine("Brisanje prekinuto!\n");
                     }
+                    
                 }
-                else
-                {
-                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u ili imenu i prezimenu");
-                }
+            }
+            if (found == 0)
+            {
+                Console.WriteLine("Nijedan korisnik ne odgovara unesenom ID-u ili imenu i prezimenu.");
             }
         }
         public static void EditUser()
         {
             bool matchById = false;
-            string userId, sure, editUser, newUserName, newUserSurname, newUserBirthDate, newTripId;
+            string userId, sure, editUser, newUserName, newUserSurname, newUserBirthDateString, newTripId;
+            DateTime newUserBirthDate;
+            int found = 0;
 
-            Console.WriteLine("Unesite id  korisnika");
+            Console.WriteLine("\n UREĐIVANJE KORISNIKA");
+            Console.Write("Unesite ID korisnika: ");
             editUser = Console.ReadLine();
 
+            while (string.IsNullOrWhiteSpace(editUser))
+            {
+                Console.WriteLine("Neispravan unos!");
+                Console.Write("Unesite ID korisnika: ");
+                editUser = Console.ReadLine();
+            }
 
             foreach (var user in usersList)
             {
@@ -198,9 +211,11 @@
 
                 if (matchById)
                 {
-                    Console.WriteLine($"Ime: {user["userName"]}");
-                    Console.WriteLine($"Prezime: {user["userSurname"]}");
-                    Console.WriteLine($"Datum rođenja: {user["userBirthDate"]}");
+                    found++;
+
+                    Console.WriteLine("\nTrenutni podaci korisnika:");
+                    PrintUser(user);
+
                     Console.WriteLine($"ID putovanja: {user["tripId"]}");
 
                     Console.WriteLine("\nOstavite prazno polje za podatke koje NE želite mijenjati.\n");
@@ -224,11 +239,15 @@
                         }
 
                         Console.Write("Novi datum rođenja (YYYY-MM-DD): ");
-                        newUserBirthDate = Console.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(newUserBirthDate))
+                        newUserBirthDateString = Console.ReadLine();
+                        while (!DateTime.TryParse(newUserBirthDateString, out newUserBirthDate) ||
+                        newUserBirthDate.Year > 2025 && newUserBirthDate.Month > 12 && newUserBirthDate.Day > 31)
                         {
-                            user["birthDate"] = newUserBirthDate;
+                            Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
+                            newUserBirthDateString = Console.ReadLine();
                         }
+                        
+                         user["birthDate"] = newUserBirthDateString;
 
                         Console.Write("Novi ID putovanja: ");
                         newTripId = Console.ReadLine();
@@ -237,18 +256,20 @@
                             user["tripId"] = newTripId;
                         }
 
-                        Console.WriteLine("\nUpješne izmjene!\n");
+                        Console.WriteLine("\nPodaci korisnika su uspješno ažurirani!");
                         return;
                     }
                     else
                     {
                         Console.WriteLine("Izmjene prekinute!");
+                        return;
                     }
                 }
-                else
-                {
-                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u");
-                }
+                
+            }
+            if (found == 0)
+            {
+                Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u");
             }
         }
 
@@ -256,15 +277,22 @@
         {
             List<string> usersSurnamesList = new List<string>();
             DateTime userBirthDate, minusUserBirthDate, nowDateTime = DateTime.Now;
-            Console.WriteLine("ID - Ime - Prezime - Datum rođenja - ID putovanja");
+            string[] userTripsList;
+            int found = 0;
 
+            Console.WriteLine("\nPREGLED SVIH KORISNIKA ");
+
+            Console.WriteLine("\nKorisnici sortirani po prezimenu:\n");
             usersList.Sort((usersDict1, usersDict2) => usersDict1["userSurname"].CompareTo(usersDict2["userSurname"]));
             Console.WriteLine("Sortirani korisnici: ");
 
             foreach (var user in usersList)
             {
-                PrintUsers();
+                PrintUser(user);
             }
+
+            Console.WriteLine("\nKorisnici koji imaju više od 20 godina:\n");
+
             foreach (var user in usersList)
             {
                 if (DateTime.TryParse(user["userBirthDate"], out userBirthDate))
@@ -272,55 +300,110 @@
                     minusUserBirthDate = nowDateTime.AddYears(-20);
                     if (userBirthDate <= minusUserBirthDate)
                     {
-                        PrintUsers();
+                        found++;
+                        PrintUser(user);
 
                     }  
                 } 
             }
-        }
+            if (found == 0)
+            {
+                found = 0;
+                Console.WriteLine("Nema korisnika starijih od 20 godina.");
+            }
 
+            Console.WriteLine("\nKorisnici koji imaju barem 2 putovanja:\n");
+
+            foreach (var user in usersList)
+            {
+                userTripsList = user["tripId"].Split(" ");
+                if (userTripsList.Length >= 2)
+                {
+                    found++;
+                    PrintUser(user);
+                }  
+            }
+            if (found == 0)
+            {
+                Console.WriteLine("Nema korisnika s barem 2 putovanja.");
+            }
+
+        }
         public static void ConnectWithTrip(string findUserIdNameSurname, string tripIdString)
         {
-
             string findUserId, findUserFullName, sure;
             bool matchById = false, matchByFullName = false;
+            int found = 0;
 
-
-            foreach(var user in usersList)
-            {
-                findUserId = user["userId"];
-                findUserFullName = user["userName"] + " " + user["userSurname"];
-
-                matchById = findUserIdNameSurname.Equals(findUserId);
-                matchByFullName = findUserIdNameSurname.Equals(findUserFullName);
-
-                if (matchById || matchByFullName)
-                {
-                    user["tripId"] = tripIdString;
-                }
-                else
-                {
-                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom id-u ili imenu i prezimenu");
-                }
-            }
-        }
-
-        public static void UserAnalysis(string findUserIdNameSurname)
-        { 
-            string findUserId, findUserFullName, sure;
-            bool matchById = false, matchByFullName = false;
-            int totalPrice = 0, totalFuel = 0, totalKm = 0, maxTripFuel = 0, found  = 0;
-            string choiceDate;
+            Console.WriteLine("\nPOVEZIVANJE KORISNIKA S PUTOVANJEM");
 
             while (string.IsNullOrWhiteSpace(findUserIdNameSurname))
             {
                 Console.WriteLine("Neispravan unos!");
-                Console.Write("Unesi ime: ");
+                Console.Write("Unesite ID ili ime i prezime korisnika: ");
                 findUserIdNameSurname = Console.ReadLine();
             }
 
-            Console.WriteLine("Unesite datum: ");
-            choiceDate = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(tripIdString))
+            {
+                Console.WriteLine("Neispravan ID putovanja!");
+                return;
+            }
+
+            while (found == 0)
+            {
+                foreach (var user in usersList)
+                {
+                    findUserId = user["userId"];
+                    findUserFullName = user["userName"] + " " + user["userSurname"];
+
+                    matchById = findUserIdNameSurname.Equals(findUserId);
+                    matchByFullName = findUserIdNameSurname.Equals(findUserFullName);
+
+
+                    if (matchById || matchByFullName)
+                    {
+                        user["tripId"] = user["tripId"] + " " + tripIdString;
+                        Console.WriteLine($"\nKorisniku {findUserFullName} dodijeljeno je putovanje s ID-jem {tripIdString}.");
+
+                        found++;
+                    }
+                }
+                if (found == 0)
+                {
+                    Console.WriteLine("Nijedan korisnik ne odgovara unesenom ID-u ili imenu i prezimenu.");
+                }
+
+            }
+        }
+        public static void UserAnalysis(string findUserIdNameSurname)
+        { 
+            string findUserId, findUserFullName, sure, choiceDateString;
+            bool matchById = false, matchByFullName = false;
+            double totalPrice = 0, totalFuel = 0, totalKm = 0, maxTripFuel = 0;
+            DateTime choiceDate;
+            int foundTrip = 0, found = 0, foundDate = 0;
+        
+
+            Console.WriteLine("\nIZVJEŠTAJ I ANALIZA KORISNIKA");
+
+
+            while (string.IsNullOrWhiteSpace(findUserIdNameSurname))
+            {
+                Console.WriteLine("Neispravan unos!");
+                Console.Write("Unesite ID ili ime i prezime korisnika: ");
+                findUserIdNameSurname = Console.ReadLine();
+            }
+
+            Console.Write("Unesite datum za pregled putovanja (YYYY-MM-DD) ili ostavite prazno: ");
+            choiceDateString = Console.ReadLine();
+            while (!DateTime.TryParse(choiceDateString, out choiceDate) ||
+            choiceDate.Year > 2025 && choiceDate.Month > 12 && choiceDate.Day > 31)
+            {
+                Console.WriteLine("Neispravan datum!");
+                Console.Write("Unesite datum (YYYY-MM-DD) ili ostavite prazno: ");
+                choiceDateString = Console.ReadLine();
+            }
 
             foreach (var user in usersList) {
             {
@@ -330,64 +413,79 @@
                 matchById = findUserIdNameSurname.Equals(findUserId);
                 matchByFullName = findUserIdNameSurname.Equals(findUserFullName);
 
-
-
                 if (matchById || matchByFullName)
                 {
+                    found++;
                     foreach (var trip in Trips.tripsList)
                     {
-                        if (trip["tripId"].Equals(user["tripId"]))
+                        if (user["tripId"].Contains(trip["tripId"]))
                         {
-                            totalPrice = totalPrice + int.Parse(trip["totalTripPrice"]);
-                            totalFuel = totalFuel + int.Parse(trip["tripFuel"]);
-                            totalKm = totalKm + int.Parse(trip["tripKm"]);
+                            foundTrip++;
+                            totalPrice = totalPrice + double.Parse(trip["totalTripPrice"]);
+                            totalFuel = totalFuel + double.Parse(trip["tripFuel"]);
+                            totalKm = totalKm + double.Parse(trip["tripKm"]);
 
                             if (int.Parse(trip["tripFuel"]) > maxTripFuel)
                             {
-                                maxTripFuel = int.Parse(trip["tripFuel"]);
+                                maxTripFuel = double.Parse(trip["tripFuel"]);
                             }
-                            if (totalKm != 0)
-                            {
-                                Console.WriteLine($"ukupna potorošnja goriva je {totalFuel}, ukupni troškovi goriva {totalPrice}, prosječna  potrošnja goriva {totalFuel / totalKm * 100}, a putovanje s najvećom potrošnjom goriva {maxTripFuel}");
-                            }
+                           
                         }
+                    }
+                    if (foundTrip == 0)
+                    {
+                        Console.WriteLine("Ovaj korisnik nema nijedno povezano putovanje.");
+                        return;
+                    }
 
+                    Console.WriteLine($"\nUkupna potrošnja goriva: {totalFuel} L");
+                    Console.WriteLine($"Ukupni troškovi goriva: {totalPrice}");
+                    if (totalKm > 0)
+                    {
+                        double avgConsumption = totalFuel / totalKm * 100.0;
+                        Console.WriteLine($"Prosječna potrošnja goriva: {avgConsumption:F2} L/100km");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Prosječnu potrošnju nije moguće izračunati (ukupno km = 0).");
+                    }
 
+                    if (maxTripFuel != null)
+                    {
+                        Console.WriteLine("\nPutovanje s najvećom potrošnjom goriva:");
+                        Trips.PrintTrip(user);
                     }
                     foreach (var trip in Trips.tripsList)
                     {
                         if (int.Parse(trip["tripFuel"]) == maxTripFuel)
                         {
-                            Trips.PrintTrips();
+                            Trips.PrintTrip(trip);
                         }
                     }
                     foreach (var trip in Trips.tripsList)
                     {
                         if (int.Parse(trip["tripFuel"]) == maxTripFuel)
                         {
-                            Trips.PrintTrips();
-                        }
+                            Trips.PrintTrip(trip);
+                    }
                     }
 
                     foreach (var trip in Trips.tripsList)
                     {
                         if (choiceDate.ToString() == trip["tripDate"])
                         {
-
-                            Console.WriteLine(
-                                $"{trip["tripId"]} - " +
-                                $"{trip["tripDate"]} - " +
-                                $"{trip["tripKm"]} - " +
-                                $"{trip["tripFuel"]} - " +
-                                $"{trip["tripFuelPriceLiter"]} - " +
-                                $"{trip["totalTripPrice"]}");
+                            foundDate++;
+                                Trips.PrintTrip(trip);   
 
                         }
                     }
-                }
-                    found++;
+                    if (foundDate == 0)
+                    {
+                            Console.WriteLine("Nema putovanja na taj datum za ovog korisnika.");
+
+                    }
+                }    
             }
-              
 
             }
             if (found == 0)
