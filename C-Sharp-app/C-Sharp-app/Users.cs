@@ -37,7 +37,7 @@ namespace Console_app
                             DeleteUser();
                             break;
                         case 3:
-                            EditUsers();
+                            EditUser();
                             break;
                         case 4:
                             ViewUsers();
@@ -166,7 +166,7 @@ namespace Console_app
         }
 
 
-        public static void EditUsers()
+        public static void EditUser()
         {
             bool matchById = false;
             string userId, sure, editUser, newUserName, newUserSurname, newUserBirthDate, newTripId;
