@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System.ComponentModel.Design;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Console_app
 {
@@ -72,13 +73,24 @@ namespace Console_app
 
             Console.Write("Unesi ime: ");
             userName = Console.ReadLine();
+            while(string.IsNullOrWhiteSpace(userName))
+            {
+                Console.WriteLine("Neispravan unos!\n");
+                Console.Write("Unesi ime: ");
+                userName = Console.ReadLine();
+            }
 
             Console.Write("Unesi prezime: ");
             userSurname = Console.ReadLine();
+            while (string.IsNullOrWhiteSpace(userSurname))
+            {
+                Console.WriteLine("Neispravan unos!\n");
+                Console.Write("Unesi ime: ");
+                userSurname = Console.ReadLine();
+            }
 
             Console.Write("Unesi datum rođenja (npr. 2000-05-12): ");
             userBirthDateString = Console.ReadLine();
-
             while (!DateTime.TryParse(userBirthDateString, out userBirthDate))
             {
                 Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
@@ -155,25 +167,6 @@ namespace Console_app
 
         }
 
-        public static void ViewUsers()
-        {
-            Console.WriteLine("ID | Ime | Prezime | Datum rođenja | ID putovanja");
-
-            foreach (var user in usersList)
-            {
-                Console.WriteLine(
-                    $"{user["userId"]} | " +
-                    $"{user["userName"]} | " +
-                    $"{user["userSurname"]} | " +
-                    $"{user["userBirthDate"]} | " +
-                    $"{user["tripId"]}"
-                );
-            }
-
-
-
-
-        }
 
         public static void EditUsers()
         {
@@ -245,6 +238,61 @@ namespace Console_app
             }
 
             
+        }
+
+        public static void ViewUsers()
+        {
+            List<string> usersSurnamesList = new List<string>();
+            DateTime userBirthDate, minusUserBirthDate, nowDateTime = DateTime.Now;
+            Console.WriteLine("ID - Ime - Prezime - Datum rođenja - ID putovanja");
+
+
+            usersList.Sort((usersDict1, usersDict2) => usersDict1["userSurname"].CompareTo(usersDict2["userSurname"]));
+            Console.WriteLine("Sortirani korisnici: ");
+
+            foreach (var user in usersList)
+            {
+                Console.WriteLine(
+                    $"\n{user["userId"]} - " +
+                    $"{user["userName"]} - " +
+                    $"{user["userSurname"]} - " +
+                    $"{user["userBirthDate"]} - " +
+                    $"{user["tripId"]}\n"
+                );
+            }
+
+            foreach (var user in usersList)
+            {
+                if (DateTime.TryParse(user["userBirthDate"], out userBirthDate))
+                {
+                    minusUserBirthDate = nowDateTime.AddYears(-20);
+                    if (userBirthDate <= minusUserBirthDate)
+                    {
+                        Console.WriteLine("\n\nKorisnici koji imaju više od 20 godina:\n");
+                        Console.WriteLine(
+                        $"\n{user["userId"]} - " +
+                        $"{user["userName"]} - " +
+                        $"{user["userSurname"]} - " +
+                        $"{user["userBirthDate"]} - " +
+                        $"{user["tripId"]}\n"
+                        );
+
+
+                    }
+                    
+                } 
+
+
+            }
+
+
+                
+
+
+
+
+
+
         }
     }
 }
