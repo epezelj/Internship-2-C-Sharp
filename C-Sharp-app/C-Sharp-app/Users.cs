@@ -10,8 +10,6 @@ namespace Console_app
         public static void UsersMenu()
         {
 
-            int choice;
-
             Console.WriteLine("\nOdabrali ste opciju Korisnici!");
 
 
@@ -27,7 +25,7 @@ namespace Console_app
                 );
 
 
-                if (int.TryParse(Console.ReadLine(), out choice))
+                if (int.TryParse(Console.ReadLine(), out int choice))
                 {
 
                     switch (choice)
