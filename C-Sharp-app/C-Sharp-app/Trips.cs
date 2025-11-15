@@ -59,7 +59,7 @@ namespace Console_app
         public static void AddTrip()
         {
             DateTime tripDate;
-            double tripKm, tripFuel, tripPricePerLiter, totalTripPrice;
+            double tripKm, tripFuel, tripFuelPriceLiter, totalTripPrice;
             int tripIdInt = 0;
             string tripIdString, tripDateString, tripKmString, tripFuelString, tripPriceLiterString;
             Dictionary<string, string> tripDict = new Dictionary<string, string>();
@@ -101,19 +101,19 @@ namespace Console_app
 
             Console.Write("Unesi cijenu goriva po litri: ");
             tripPriceLiterString = Console.ReadLine();
-            while (!double.TryParse(tripPriceLiterString, out tripPricePerLiter) || tripPricePerLiter <= 0)
+            while (!double.TryParse(tripPriceLiterString, out tripFuelPriceLiter) || tripFuelPriceLiter <= 0)
             {
                 Console.Write("Neispravan unos! Unesi cijenu po litri (> 0): ");
                 tripPriceLiterString = Console.ReadLine();
             }
 
-            totalTripPrice = tripFuel * tripPricePerLiter;
+            totalTripPrice = tripFuel * tripFuelPriceLiter;
 
             tripDict.Add("tripId", tripIdString);
             tripDict.Add("tripDate", tripDateString);
             tripDict.Add("tripKm", tripKmString);
             tripDict.Add("tripFuel", tripFuelString);
-            tripDict.Add("tripPricePerLiter", tripPriceLiterString);
+            tripDict.Add("tripFuelPriceLiter", tripPriceLiterString);
             tripDict.Add("totalTripPrice", totalTripPrice.ToString());
 
             tripsList.Add(tripDict);
@@ -179,8 +179,7 @@ namespace Console_app
                 {
                     Console.WriteLine(
                         "Pronađeno putovanje:\n" +
-                        $"ID: {trip["tripId"]}, Datum: {trip["tripDate"]}, Km: {trip["tripKm"]}, " +
-                        $"Gorivo: {trip["tripFuel"]}, Cijena/L: {trip["tripPricePerLiter"]}"
+                        $"{trip["tripId"]} - {trip["tripDate"]} - {trip["tripKm"]} km - {trip["tripFuel"]} L - {trip["tripPricePerLiter"]} EUR/L - {trip["totalTripPrice"]} EUR"
                     );
 
                     Console.WriteLine("\nŽelite li sigurno izbrisati ovo putovanje? (DA ili NE)");
@@ -215,8 +214,7 @@ namespace Console_app
                 {
                     Console.WriteLine(
                         "Pronađeno putovanje:\n" +
-                        $"ID: {trip["tripId"]}, Datum: {trip["tripDate"]}, Km: {trip["tripKm"]}, " +
-                        $"Gorivo: {trip["tripFuel"]}, Cijena/L: {trip["tripPricePerLiter"]}"
+                        $"ID: {trip["tripId"]}, Datum: {trip["tripDate"]}, Km: {trip["tripKm"]} - {trip["tripFuel"]}, Cijena/L: {trip["tripFuelPriceLiter"]} EUR - {trip["totalTripPrice"]}"
                     );
 
                     Console.WriteLine("\nŽelite li sigurno izbrisati ovo putovanje? (DA ili NE)");
@@ -243,5 +241,133 @@ namespace Console_app
 
 
         }
+
+        public static void EditTrips()
+        {
+            bool matchById = false;
+            string tripId, sure, editTripId;
+            string newTripDateString, newTripKm, newTripFuelString, newTripPriceLitreString;
+            double newTotalTripPrice, newTripPriceLiter, newTripFuel;
+
+            DateTime tripDate, newTripDate;
+            double tripKm, tripFuel, tripFuelPriceLiter;
+
+            Console.WriteLine("Unesite id putovanja");
+            editTripId = Console.ReadLine();
+
+            for (int counter = 0; counter < tripsList.Count; counter++)
+            {
+                var trip = tripsList[counter];
+
+                tripId = trip["tripId"];
+
+                matchById = editTripId.Equals(tripId);
+
+                if (matchById)
+                {
+                    Console.WriteLine($"Datum putovanja: {trip["tripDate"]}");
+                    Console.WriteLine($"Kilometri puta: {trip["tripKm"]}");
+                    Console.WriteLine($"Količina potrošenog goriva (L): {trip["tripFuel"]}");
+                    Console.WriteLine($"Cijena goriva po litri: {trip["tripPricePerLiter"]}");
+
+                    Console.WriteLine("\nOstavite prazno polje za podatke koje NE želite mijenjati.\n");
+                    Console.WriteLine("Želite li sigurno mijenjati podatke?: ");
+                    sure = Console.ReadLine();
+
+                    if (sure == "DA")
+                    {
+                        Console.Write("Novi datum putovanja (YYYY-MM-DD): ");
+                        newTripDateString = Console.ReadLine();
+
+                   
+                        while (!DateTime.TryParse(newTripDateString, out newTripDate))
+                        {
+                            Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
+                            newTripDateString = Console.ReadLine();
+                        }
+                        while (newTripDate.Year > 2025 && newTripDate.Month > 12 && newTripDate.Day > 31)
+                        {
+                            Console.Write("Neispravan datum, pokušaj ponovno (npr. 2000-05-12): ");
+                            newTripDateString = Console.ReadLine();
+                        }
+
+                        Console.Write("Nova kilometraža: ");
+                        newTripKm = Console.ReadLine();
+
+                        if (!string.IsNullOrWhiteSpace(newTripKm))
+                        {
+                            while (!double.TryParse(newTripKm, out tripKm) || tripKm <= 0)
+                            {
+                                Console.Write("Neispravan unos! Unesi broj kilometara (> 0): ");
+                                newTripKm = Console.ReadLine();
+
+                                if (string.IsNullOrWhiteSpace(newTripKm))
+                                    break; 
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(newTripKm))
+                                trip["tripKm"] = newTripKm;
+                        }
+
+                        Console.Write("Nova količina goriva (L): ");
+                        newTripFuelString = Console.ReadLine();
+
+                        if (!string.IsNullOrWhiteSpace(newTripFuelString))
+                        {
+                            while (!double.TryParse(newTripFuelString, out newTripFuel) || newTripFuel <= 0)
+                            {
+                                Console.Write("Neispravan unos! Unesi količinu goriva (> 0): ");
+                                newTripFuelString = Console.ReadLine();
+
+                                if (string.IsNullOrWhiteSpace(newTripFuelString))
+                                    break;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(newTripFuelString))
+                                trip["tripFuel"] = newTripFuelString;
+
+                        }
+
+                        Console.Write("Nova cijena goriva po litri: ");
+                        newTripPriceLitreString = Console.ReadLine();
+
+
+                        if (!string.IsNullOrWhiteSpace(newTripPriceLitreString))
+                        {
+                            while (!double.TryParse(newTripPriceLitreString, out newTripPriceLiter) || newTripPriceLiter <= 0)
+                            {
+                                Console.Write("Neispravan unos! Unesi cijenu po litri (> 0): ");
+                                newTripPriceLitreString = Console.ReadLine();
+
+                                if (string.IsNullOrWhiteSpace(newTripPriceLitreString))
+                                    break;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(newTripPriceLitreString))
+                                trip["tripPricePerLiter"] = newTripPriceLitreString;
+                        }
+
+                        if (double.TryParse(trip["tripFuel"], out newTripFuel) && double.TryParse(trip["tripPricePerLiter"], out newTripPriceLiter))
+                        {
+                            newTotalTripPrice = newTripFuel * newTripPriceLiter;
+                            trip["tripTotalPrice"] = newTotalTripPrice.ToString();
+                        }
+
+                        Console.WriteLine("\nUspješne izmjene!\n");
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Izmjene prekinute!");
+                        return;
+                    }
+                }
+            }
+
+            Console.WriteLine("Nijedno putovanje ne odgovara unesenom id-u");
+        }
+
+
+
     }
 }
