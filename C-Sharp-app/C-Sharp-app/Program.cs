@@ -47,11 +47,6 @@
                     Console.WriteLine("Neispravan unos!");
                 }
             }
-        }
-
-       
-        
+        }   
     }
-
-    
 }

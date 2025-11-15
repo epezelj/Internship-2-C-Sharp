@@ -1,10 +1,8 @@
-﻿using System.Numerics;
-
-namespace Console_app
+﻿namespace Console_app
 {
     internal class Trips
     {
-        static List<Dictionary<string, string>> tripsList = new List<Dictionary<string, string>>();
+        public static List<Dictionary<string, string>> tripsList = new List<Dictionary<string, string>>();
 
         public static void TripsMenu()
         {
@@ -14,7 +12,7 @@ namespace Console_app
             while (true)
             {
                 Console.WriteLine(
-                    "\n1 - Unos novog putovanja\n" +
+                    "1 - Unos novog putovanja\n" +
                     "2 - Brisanje putovanja\n" +
                     "3 - Uređivanje postojećeg putovanja\n" +
                     "4 - Pregled svih putovanja\n" +
@@ -40,6 +38,7 @@ namespace Console_app
                             ViewTrips();
                             break;
                         case 5:
+                            Console.WriteLine("Unesite id ili ime i prezime korisnika:\nOdabir: ");
                             Users.UserAnalysis(Console.ReadLine());
                             break;
                         case 0:
@@ -65,34 +64,50 @@ namespace Console_app
             { "totalTripPrice", (8 * 1.50).ToString() }
         });
 
-             tripsList.Add(new Dictionary<string, string> {
+            tripsList.Add(new Dictionary<string, string> {
             { "tripId", "2" }, { "tripDate", "2024-02-12" },
             { "tripKm", "250" }, { "tripFuel", "14" },
             { "tripFuelPriceLiter", "1.60" },
             { "totalTripPrice", (14 * 1.60).ToString() }
         });
 
-             tripsList.Add(new Dictionary<string, string> {
+            tripsList.Add(new Dictionary<string, string> {
             { "tripId", "3" }, { "tripDate", "2024-03-05" },
             { "tripKm", "80" }, { "tripFuel", "5" },
             { "tripFuelPriceLiter", "1.45" },
             { "totalTripPrice", (5 * 1.45).ToString() }
         });
 
-             tripsList.Add(new Dictionary<string, string> {
+            tripsList.Add(new Dictionary<string, string> {
             { "tripId", "4" }, { "tripDate", "2024-04-01" },
             { "tripKm", "300" }, { "tripFuel", "20" },
             { "tripFuelPriceLiter", "1.70" },
             { "totalTripPrice", (20 * 1.70).ToString() }
         });
 
-             tripsList.Add(new Dictionary<string, string> {
+            tripsList.Add(new Dictionary<string, string> {
             { "tripId", "5" }, { "tripDate", "2024-05-20" },
             { "tripKm", "150" }, { "tripFuel", "10" },
             { "tripFuelPriceLiter", "1.55" },
             { "totalTripPrice", (10 * 1.55).ToString() }
         });
             return;
+
+        }
+
+        public static void PrintTrips()
+        {
+            foreach (var trip in tripsList)
+            {
+                Console.WriteLine(
+                    $"\n{trip["tripId"]} - " +
+                    $"{trip["tripDate"]} - " +
+                    $"{trip["tripKm"]} - " +
+                    $"{trip["tripFuel"]} - " +
+                    $"{trip["tripFuelPriceLiter"]} - " +
+                    $"{trip["totalTripPrice"]}"
+                );
+            }
 
         }
         public static void AddTrip()
@@ -159,17 +174,12 @@ namespace Console_app
 
             Console.Write("Unesi id ili ime i prezime korisnika kojem želite dodati ovo putovanjei: ");
             Users.ConnectWithTrip(Console.ReadLine(), tripIdString);
-            
+
 
             Console.WriteLine("\nPutovanje je uspješno dodano!");
-            
+
             tripId++;
-
-
         }
-
-
-
         public static void DeleteTrip()
         {
             string deleteTripId, tripId, sure, minTripPriceString, minTripPrice,
@@ -206,13 +216,11 @@ namespace Console_app
                     }
 
                 }
-
                 else
                 {
                     Console.WriteLine("Nijedno putovanje ne odgovara unesenom id-u.");
                 }
             }
-
 
             for (int counter = 0; counter < tripsList.Count; counter++)
             {
@@ -281,11 +289,7 @@ namespace Console_app
                 {
                     Console.WriteLine("Nijedno putovanje nije jeftinije od unesenog iznosa");
                 }
-
             }
-
-
-
         }
 
         public static void EditTrip()
@@ -301,12 +305,9 @@ namespace Console_app
             Console.WriteLine("Unesite id putovanja");
             editTripId = Console.ReadLine();
 
-            for (int counter = 0; counter < tripsList.Count; counter++)
+            foreach(var trip in tripsList)
             {
-                var trip = tripsList[counter];
-
                 tripId = trip["tripId"];
-
                 matchById = editTripId.Equals(tripId);
 
                 if (matchById)
@@ -412,116 +413,52 @@ namespace Console_app
 
             Console.WriteLine("Nijedno putovanje ne odgovara unesenom id-u");
         }
-
-
-
-   
-
-
-    public static void ViewTrips()
+        public static void ViewTrips()
         {
+            PrintTrips();
+
             tripsList.Sort((tripDict1, tripDict2) =>
                 double.Parse(tripDict1["totalTripPrice"]).CompareTo(double.Parse(tripDict2["totalTripPrice"])));
 
             Console.WriteLine("\nSva putovanja sortirana po trošku uzlazno:");
             Console.WriteLine("ID - Datum - Km - Gorivo(L) - Cijena/L - Ukupno");
-            foreach (var trip in tripsList)
-            {
-                Console.WriteLine(
-                    $"\n{trip["tripId"]} - " +
-                    $"{trip["tripDate"]} - " +
-                    $"{trip["tripKm"]} - " +
-                    $"{trip["tripFuel"]} - " +
-                    $"{trip["tripFuelPriceLiter"]} - " +
-                    $"{trip["totalTripPrice"]}\n"
-                );
-            }
+            PrintTrips();
 
             tripsList.Sort((tripDict1, tripDict2) =>
                 double.Parse(tripDict2["totalTripPrice"]).CompareTo(double.Parse(tripDict1["totalTripPrice"])));
 
             Console.WriteLine("\nSva putovanja sortirana po trošku silazno:");
             Console.WriteLine("ID - Datum - Km - Gorivo(L) - Cijena/L - Ukupno");
-            foreach (var trip in tripsList)
-            {
-                Console.WriteLine(
-                    $"\n{trip["tripId"]} - " +
-                    $"{trip["tripDate"]} - " +
-                    $"{trip["tripKm"]} - " +
-                    $"{trip["tripFuel"]} - " +
-                    $"{trip["tripFuelPriceLiter"]} - " +
-                    $"{trip["totalTripPrice"]}\n"
-                );
-            }
+            PrintTrips();
 
             tripsList.Sort((tripDict1, tripDict2) =>
                 double.Parse(tripDict1["tripKm"]).CompareTo(double.Parse(tripDict2["tripKm"])));
 
             Console.WriteLine("\nSva putovanja sortirana po kilometraži uzlazno:");
             Console.WriteLine("ID - Datum - Km - Gorivo(L) - Cijena/L - Ukupno");
-            foreach (var trip in tripsList)
-            {
-                Console.WriteLine(
-                    $"\n{trip["tripId"]} - " +
-                    $"{trip["tripDate"]} - " +
-                    $"{trip["tripKm"]} - " +
-                    $"{trip["tripFuel"]} - " +
-                    $"{trip["tripFuelPriceLiter"]} - " +
-                    $"{trip["totalTripPrice"]}\n"
-                );
-            }
+            PrintTrips();
 
             tripsList.Sort((tripDict1, tripDict2) =>
                double.Parse(tripDict2["tripKm"]).CompareTo(double.Parse(tripDict1["tripKm"])));
 
             Console.WriteLine("\nSva putovanja sortirana po kilometraži silazno:");
             Console.WriteLine("ID - Datum - Km - Gorivo(L) - Cijena/L - Ukupno");
-            foreach (var trip in tripsList)
-            {
-                Console.WriteLine(
-                    $"\n{trip["tripId"]} - " +
-                    $"{trip["tripDate"]} - " +
-                    $"{trip["tripKm"]} - " +
-                    $"{trip["tripFuel"]} - " +
-                    $"{trip["tripFuelPriceLiter"]} - " +
-                    $"{trip["totalTripPrice"]}\n"
-                );
-            }
+            PrintTrips();
 
             tripsList.Sort((tripDict1, tripDict2) =>
                 DateTime.Parse(tripDict1["tripDate"]).CompareTo(DateTime.Parse(tripDict2["tripDate"])));
 
             Console.WriteLine("\nSva putovanja sortirana po datumu uzlazno:");
             Console.WriteLine("ID - Datum - Km - Gorivo(L) - Cijena/L - Ukupno");
-            foreach (var trip in tripsList)
-            {
-                Console.WriteLine(
-                    $"\n{trip["tripId"]} - " +
-                    $"{trip["tripDate"]} - " +
-                    $"{trip["tripKm"]} - " +
-                    $"{trip["tripFuel"]} - " +
-                    $"{trip["tripFuelPriceLiter"]} - " +
-                    $"{trip["totalTripPrice"]}\n"
-                );
-            }
+            PrintTrips();
 
             tripsList.Sort((tripDict1, tripDict2) =>
                 DateTime.Parse(tripDict2["tripDate"]).CompareTo(DateTime.Parse(tripDict1["tripDate"])));
 
             Console.WriteLine("\nSva putovanja sortirana po datumu silazno:");
             Console.WriteLine("ID - Datum - Km - Gorivo(L) - Cijena/L - Ukupno");
-            foreach (var trip in tripsList)
-            {
-                Console.WriteLine(
-                    $"\n{trip["tripId"]} - " +
-                    $"{trip["tripDate"]} - " +
-                    $"{trip["tripKm"]} - " +
-                    $"{trip["tripFuel"]} - " +
-                    $"{trip["tripFuelPriceLiter"]} - " +
-                    $"{trip["totalTripPrice"]}\n"
-                );
-            }
+            PrintTrips();
         }
-
+    
     }
 }
